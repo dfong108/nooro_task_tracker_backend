@@ -3,17 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start:debug": "node --inspect dist/index.js",
+    "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
-    "prepare": "prisma generate",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:deploy": "prisma migrate deploy",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:migrate": "prisma migrate dev",
+    "db:wait": "sh -c 'until docker compose exec -T db mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD --silent; do echo waiting for db...; sleep 2; done'",
+    "predev": "docker compose up -d db && npm run db:wait && npm run db:generate && npm run db:push",
+    "prepare": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.14.0",

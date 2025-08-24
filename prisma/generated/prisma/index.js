@@ -131,7 +131,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/davidsonfong/Dev/practice/challenges/Nooro/nooro_task_tracker_backend/prisma/generated/prisma",
+      "value": "/Users/davidsonfong/Dev/pro/Interviews/Nooro Fullstack Dev/nooro_task_tracker_backend/prisma/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -145,11 +145,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/davidsonfong/Dev/practice/challenges/Nooro/nooro_task_tracker_backend/prisma/schema.prisma",
+    "sourceFilePath": "/Users/davidsonfong/Dev/pro/Interviews/Nooro Fullstack Dev/nooro_task_tracker_backend/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../..",
@@ -159,6 +159,7 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
