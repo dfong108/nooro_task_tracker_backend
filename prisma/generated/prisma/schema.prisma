@@ -4,14 +4,21 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "foreignKeys"
 }
 
 enum TaskColor {
   RED
-  BLUE
+  ORANGE
+  YELLOW
   GREEN
+  BLUE
+  INDIGO
+  PURPLE
+  PINK
+  BROWN
 }
 
 model Task {

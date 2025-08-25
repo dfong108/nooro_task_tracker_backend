@@ -140,8 +140,14 @@ exports.Prisma.TaskOrderByRelevanceFieldEnum = {
 };
 exports.TaskColor = exports.$Enums.TaskColor = {
   RED: 'RED',
+  ORANGE: 'ORANGE',
+  YELLOW: 'YELLOW',
+  GREEN: 'GREEN',
   BLUE: 'BLUE',
-  GREEN: 'GREEN'
+  INDIGO: 'INDIGO',
+  PURPLE: 'PURPLE',
+  PINK: 'PINK',
+  BROWN: 'BROWN'
 };
 
 exports.Prisma.ModelName = {

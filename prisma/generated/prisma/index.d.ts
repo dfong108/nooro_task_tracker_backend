@@ -25,8 +25,14 @@ export type Task = $Result.DefaultSelection<Prisma.$TaskPayload>
 export namespace $Enums {
   export const TaskColor: {
   RED: 'RED',
+  ORANGE: 'ORANGE',
+  YELLOW: 'YELLOW',
+  GREEN: 'GREEN',
   BLUE: 'BLUE',
-  GREEN: 'GREEN'
+  INDIGO: 'INDIGO',
+  PURPLE: 'PURPLE',
+  PINK: 'PINK',
+  BROWN: 'BROWN'
 };
 
 export type TaskColor = (typeof TaskColor)[keyof typeof TaskColor]

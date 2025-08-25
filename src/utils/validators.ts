@@ -22,10 +22,19 @@ export function validateTitle(title: string) {
 }
 
 export function validateColor(color: unknown) {
-  const allowed = new Set(Object.values(TaskColor));
-  if (!allowed.has(color as TaskColor)) {
-    throw new Error(`Color must be one of: ${Array.from(allowed).join(', ')}`);
+  if (!color) {
+    throw new Error('Color is required.');
   }
+
+  // Convert to string if it's not already
+  const colorStr = String(color).trim().toUpperCase();
+  const allowed = new Set(Object.values(TaskColor));
+
+  if (!allowed.has(colorStr as TaskColor)) {
+    throw new Error(`Color '${color}' is not valid. Must be one of: ${Array.from(allowed).join(', ')}`);
+  }
+
+  return colorStr as TaskColor;
 }
 
 export function handleNotFound(err: unknown, id: string) {

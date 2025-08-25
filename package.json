@@ -10,8 +10,10 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
-    "db:wait": "sh -c 'until docker compose exec -T db mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD --silent; do echo waiting for db...; sleep 2; done'",
+    "db:wait": "sh -c 'until docker compose exec -T db mysqladmin ping -h 127.0.0.1 -uroot -proot --silent; do echo waiting for db...; sleep 2; done'",
     "predev": "docker compose up -d db && npm run db:wait && npm run db:generate && npm run db:push",
+    "setup": "docker compose up -d db && npm run db:wait && npm run db:generate && npm run db:push",
+    "reset": "docker compose down -v && docker compose up -d db && npm run db:wait && npm run db:generate && npm run db:push",
     "prepare": "prisma generate"
   },
   "dependencies": {
@@ -27,8 +29,11 @@
     "morgan": "~1.9.1"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.0",
+    "node-fetch": "^2.6.7",
     "nodemon": "^3.1.10",
     "prisma": "^6.14.0",
     "ts-node": "^10.9.2",

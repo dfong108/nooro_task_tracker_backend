@@ -1,4 +1,4 @@
-import prisma from "../prisma/client";
+import { prisma } from "../prisma/client";
 import { Prisma, Task, TaskColor } from '../../prisma/generated/prisma';
 import {handleNotFound, validateColor, validateId, validateTitle} from "../utils";
 
@@ -37,12 +37,13 @@ export async function getTaskById(id: string): Promise<Task | null> {
  */
 export async function createTask(input: CreateTaskInput): Promise<Task> {
   validateTitle(input.title);
-  validateColor(input.color);
-  
+  const normalizedColor = validateColor(input.color);
+
+  console.log("Create Task", input)
   return prisma.task.create({
     data: {
       title: input.title.trim(),
-      color: input.color,
+      color: normalizedColor,
       completed: input.completed ?? false,
     },
   });
@@ -60,13 +61,24 @@ export async function updateTask(id: string, input: UpdateTaskInput): Promise<Ta
   if (typeof input.color !== 'undefined') validateColor(input.color);
   
   try {
+    // Prepare normalized data for update
+    const updateData: any = {};
+
+    if (typeof input.title !== 'undefined') {
+      updateData.title = input.title.trim();
+    }
+
+    if (typeof input.color !== 'undefined') {
+      updateData.color = validateColor(input.color);
+    }
+
+    if (typeof input.completed !== 'undefined') {
+      updateData.completed = input.completed;
+    }
+
     return await prisma.task.update({
       where: { id },
-      data: {
-        ...(typeof input.title !== 'undefined' ? { title: input.title.trim() } : {}),
-        ...(typeof input.color !== 'undefined' ? { color: input.color } : {}),
-        ...(typeof input.completed !== 'undefined' ? { completed: input.completed } : {}),
-      },
+      data: updateData,
     });
   } catch (err) {
     handleNotFound(err, id);
