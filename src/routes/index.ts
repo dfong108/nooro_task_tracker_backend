@@ -19,8 +19,34 @@ import {
   UpdateTaskInput,
 } from '../controllers';
 import { TaskColor } from '../../prisma/generated/prisma';
+import { parseBoolean } from '../utils/validators';
 
 const router = Router();
+
+// Debug route for testing task completion
+router.post('/debug/complete', (req: Request, res: Response) => {
+  console.log('Complete debug endpoint hit with:', {
+    body: req.body,
+    completedValue: req.body?.completed,
+    completedType: typeof req.body?.completed,
+    headers: req.headers
+  });
+
+  // Parse the completed value in various ways
+  const completedValues = {
+    asIs: req.body?.completed,
+    asBoolean: Boolean(req.body?.completed),
+    parsedBool: req.body?.completed === true || req.body?.completed === 'true',
+    strictEqual: typeof req.body?.completed === 'boolean' ? req.body.completed : 'not a boolean'
+  };
+
+  res.json({
+    success: true,
+    received: req.body,
+    completedValues,
+    bodyType: typeof req.body
+  });
+});
 
 // Debug route for testing raw body parsing
 router.post('/debug', (req: Request, res: Response) => {
@@ -164,7 +190,9 @@ router.put('/tasks/:id', async (req: Request, res: Response) => {
     }
 
     const task = await updateTask(req.params.id, input);
-    res.json({ data: task });
+
+    // Return 200 status with the updated task data
+    res.status(200).json({ data: task });
   } catch (err) {
     res.status(statusFromError(err)).json({ error: (err as Error).message });
   }
@@ -172,11 +200,27 @@ router.put('/tasks/:id', async (req: Request, res: Response) => {
 
 router.patch('/tasks/:id/complete', async (req: Request, res: Response) => {
   try {
-    const completed =
-      typeof req.body?.completed === 'boolean' ? (req.body.completed as boolean) : undefined;
-    console.log('Received task completion request:', { completed });
+    console.log('PATCH task completion - Request details:', {
+      taskId: req.params.id,
+      body: req.body,
+      bodyType: typeof req.body,
+      completedValue: req.body?.completed,
+      completedType: typeof req.body?.completed
+    });
+
+    // Get the completed value using our utility function
+    const completed = parseBoolean(req.body?.completed);
+
+    console.log('Task completion details:', {
+      originalValue: req.body?.completed,
+      originalType: typeof req.body?.completed,
+      parsedValue: completed,
+      parsedType: typeof completed,
+      bodyContent: req.body
+    });
+
     const task = await toggleTaskCompletion(req.params.id, completed);
-    res.status(204).json({ data: task });
+    res.status(200).json({ data: task });
   } catch (err) {
     res.status(statusFromError(err)).json({ error: (err as Error).message });
   }
@@ -185,7 +229,7 @@ router.patch('/tasks/:id/complete', async (req: Request, res: Response) => {
 router.delete('/tasks/:id', async (req: Request, res: Response) => {
   try {
     await deleteTask(req.params.id);
-    res.status(204).send();
+    res.status(200).json({ data: { message: 'Task deleted successfully' } });
   } catch (err) {
     res.status(statusFromError(err)).json({ error: (err as Error).message });
   }

@@ -45,3 +45,19 @@ export function handleNotFound(err: unknown, id: string) {
     throw new Error(`Task with id "${id}" not found.`);
   }
 }
+
+/**
+ * Helper to convert various boolean-like values to actual booleans
+ */
+export function parseBoolean(value: unknown): boolean | undefined {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  if (value === 'true' || value === '1' || value === 1) {
+    return true;
+  }
+  if (value === 'false' || value === '0' || value === 0) {
+    return false;
+  }
+  return undefined; // Unable to determine
+}

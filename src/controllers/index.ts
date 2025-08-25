@@ -73,8 +73,19 @@ export async function updateTask(id: string, input: UpdateTaskInput): Promise<Ta
     }
 
     if (typeof input.completed !== 'undefined') {
+      console.log(`Setting completed status to: ${input.completed} (${typeof input.completed})`);
       updateData.completed = input.completed;
+    } else {
+      console.log('No completed status provided in update');
     }
+
+    console.log("Update Task data:", {
+      id,
+      inputReceived: input,
+      processedData: updateData,
+      hasCompletedField: 'completed' in input,
+      completedValueType: typeof input.completed
+    });
 
     return await prisma.task.update({
       where: { id },
@@ -91,20 +102,39 @@ export async function updateTask(id: string, input: UpdateTaskInput): Promise<Ta
  * If `completed` is not provided, it will flip the current state.
  */
 export async function toggleTaskCompletion(id: string, completed?: boolean): Promise<Task> {
+  console.log(`toggleTaskCompletion for task ${id} with completed=${completed} (${typeof completed})`);
   validateId(id);
-  
-  // If a target state is provided, set directly
-  if (typeof completed === 'boolean') {
-    return updateTask(id, { completed });
-  }
-  
-  // Otherwise, fetch current and flip
+
+  // Get the existing task first
   const existing = await getTaskById(id);
   if (!existing) {
     throw new Error(`Task with id "${id}" not found.`);
   }
-  
-  return updateTask(id, { completed: !existing.completed });
+
+  console.log('Current task state:', {
+    id: existing.id,
+    title: existing.title,
+    currentCompleted: existing.completed
+  });
+
+  // If a target state is provided, use it directly
+  if (typeof completed === 'boolean') {
+    console.log(`Setting task completion to explicit value: ${completed}`);
+    // Use direct Prisma update for clarity and to bypass any potential issues in updateTask
+    return prisma.task.update({
+      where: { id },
+      data: { completed }
+    });
+  }
+
+  // Otherwise, flip the current state
+  const newCompletedState = !existing.completed;
+  console.log(`Flipping task completion from ${existing.completed} to ${newCompletedState}`);
+  // Use direct Prisma update
+  return prisma.task.update({
+    where: { id },
+    data: { completed: newCompletedState }
+  });
 }
 
 /**
